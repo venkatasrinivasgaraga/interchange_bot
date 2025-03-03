@@ -1,7 +1,7 @@
 import time
 import requests
 
-BOT_URL = "https://bulk-thumb.onrender.com"  # Replace with your Render bot URL
+BOT_URL = "https://interchange-bot.onrender.com"  # Replace with your Render bot URL
 
 while True:
     try:
