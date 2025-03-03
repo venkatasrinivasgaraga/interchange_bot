@@ -25,11 +25,21 @@ app = Client("FileRenameBot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TO
 # Function to rename files
 def rename_file(filename):
     prefix = "[@Animes2u] "
-    cleaned_name = re.sub(r"(?!E\d+|\d+p)[^]+", "", filename)  # Remove unwanted brackets
-    cleaned_name = re.sub(r"@\S+", "", cleaned_name).strip()  # Remove @mentions
-    return prefix + cleaned_name
+    
+    # Remove unwanted bracketed text except [E78], [720p]
+    cleaned_name = re.sub(r"(?!E\d+|\d+p)[^]+", "", filename)
 
-# Command to start the bot
+    # Remove @mentions (inside and outside brackets)
+    cleaned_name = re.sub(r"@\S+", "", cleaned_name).strip()
+
+    # Ensure there's only one space between words
+    cleaned_name = re.sub(r"\s+", " ", cleaned_name).strip()
+
+    # Add prefix at the start
+    renamed_file = prefix + cleaned_name
+    return renamed_file
+
+# Start command
 @app.on_message(filters.command("start"))
 async def start_command(client, message):
     await message.reply_text(
@@ -43,7 +53,7 @@ async def start_command(client, message):
         ),
     )
 
-# Command to pause renaming
+# Pause renaming
 @app.on_message(filters.command("pause"))
 async def pause_renaming(client, message):
     user_id = str(message.from_user.id)
@@ -53,7 +63,7 @@ async def pause_renaming(client, message):
         json.dump(user_settings, f)
     await message.reply_text("✅ File renaming is now **paused**.")
 
-# Command to resume renaming
+# Resume renaming
 @app.on_message(filters.command("resume"))
 async def resume_renaming(client, message):
     user_id = str(message.from_user.id)
@@ -63,7 +73,7 @@ async def resume_renaming(client, message):
         json.dump(user_settings, f)
     await message.reply_text("✅ File renaming is now **enabled**.")
 
-# Command to set a permanent thumbnail
+# Set permanent thumbnail
 @app.on_message(filters.command("setthumb") & filters.photo)
 async def set_thumbnail(client, message):
     user_id = str(message.from_user.id)
@@ -74,7 +84,7 @@ async def set_thumbnail(client, message):
         json.dump(user_settings, f)
     await message.reply_text("✅ Thumbnail has been **saved**.")
 
-# Command to delete saved thumbnail
+# Delete saved thumbnail
 @app.on_message(filters.command("delthumb"))
 async def delete_thumbnail(client, message):
     user_id = str(message.from_user.id)
@@ -86,7 +96,7 @@ async def delete_thumbnail(client, message):
     else:
         await message.reply_text("⚠️ No thumbnail was set.")
 
-# File handling and renaming
+# Handle file renaming
 @app.on_message(filters.document | filters.video)
 async def rename_and_send_file(client, message):
     user_id = str(message.from_user.id)
