@@ -77,12 +77,16 @@ async def change_thumbnail(client, message):
 
     # Ensure the filename starts with [@Animes2u]
     new_filename = f"{DEFAULT_KEYWORD}{file_name}{file_ext}"
+    new_file_path = os.path.join(os.path.dirname(file_path), new_filename)
+
+    # ✅ Rename the file before uploading to prevent duplicates
+    os.rename(file_path, new_file_path)
 
     try:
         # Send renamed file with thumbnail
         await client.send_document(
             chat_id=message.chat.id,
-            document=file_path,
+            document=new_file_path,
             thumb=thumb_path,
             file_name=new_filename,
             caption=f"✅ Renamed: {new_filename}",
@@ -90,7 +94,7 @@ async def change_thumbnail(client, message):
         await message.reply_text("✅ Done! Here is your updated file.")
 
         # ✅ Delete temp file to free space
-        os.remove(file_path)
+        os.remove(new_file_path)
 
     except Exception as e:
         await message.reply_text(f"❌ Error: {e}")
