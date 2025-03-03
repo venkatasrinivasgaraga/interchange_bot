@@ -9,7 +9,7 @@ from threading import Thread
 API_ID = int(os.getenv("API_ID", "0"))
 API_HASH = os.getenv("API_HASH")
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-DEFAULT_KEYWORD = "@Animes2u "
+DEFAULT_KEYWORD = "[@Animes2u] "
 
 # Ensure required environment variables are set
 if not API_ID or not API_HASH or not BOT_TOKEN:
@@ -63,15 +63,20 @@ async def change_thumbnail(client, message):
         await message.reply_text("❌ Failed to download file.")
         return
 
-    # Extract filename & remove anything inside brackets []
+    # Extract filename & clean it
     file_name, file_ext = os.path.splitext(message.document.file_name)
-    file_name = re.sub(r'\[.*?\]', '', file_name).strip()
-    
-    # Ensure the filename starts with @Animes2u (only one occurrence)
-    if not file_name.startswith("@Animes2u"):
-        new_filename = f"{DEFAULT_KEYWORD}{file_name}{file_ext}"
-    else:
-        new_filename = f"{file_name}{file_ext}"
+
+    # Remove anything inside brackets [ ]
+    file_name = re.sub(r"\[.*?\]", "", file_name)
+
+    # Remove any word starting with '@'
+    file_name = re.sub(r"@\S+", "", file_name)
+
+    # Trim extra spaces
+    file_name = file_name.strip()
+
+    # Ensure the filename starts with [@Animes2u]
+    new_filename = f"{DEFAULT_KEYWORD}{file_name}{file_ext}"
 
     try:
         # Send renamed file with thumbnail
