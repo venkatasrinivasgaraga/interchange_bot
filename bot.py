@@ -5,9 +5,9 @@ from pyrogram import Client, filters
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 
 # Bot Configuration
-API_ID = "your_api_id"
-API_HASH = "your_api_hash"
-BOT_TOKEN = "your_bot_token"
+API_ID = "979826"
+API_HASH = "238183386c30590d073b457166ba260d"
+BOT_TOKEN = "8171600073:AAF2yBnNzw6RGp7ZijULQCBbrjnWtBEWOEI"
 
 # File to store user preferences
 USER_SETTINGS_FILE = "user_settings.json"
