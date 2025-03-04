@@ -66,10 +66,12 @@ async def change_thumbnail(client, message):
     # Extract filename & clean it
     file_name, file_ext = os.path.splitext(message.document.file_name)
 
-    # Remove anything inside brackets [ ]
-    file_name = re.sub(r"\[.*?\]", "", file_name)
+    # ✅ Keep episode numbers like [E110] or E73
+    # ✅ Keep quality indicators like [720p], 480p
+    # ❌ Remove everything else inside brackets []
+    file_name = re.sub(r"(?!E\d+|[0-9]{3,4}p).*?", "", file_name)
 
-    # Remove any word starting with '@'
+    # ❌ Remove any word starting with '@'
     file_name = re.sub(r"@\S+", "", file_name)
 
     # Trim extra spaces
